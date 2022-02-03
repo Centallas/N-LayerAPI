@@ -116,10 +116,12 @@ namespace Data_Access_Layer.Repository
                 SqlDataAdapter dataAdapter = new SqlDataAdapter(command);
                 await Task.Run(() => dataAdapter.Fill(dataSet));
                
+                ///TODO: IMPLEMENT MSG
                 //msg = "SUCCESS";
 
                 //I set this 'cause I didn't know how to become EmployeeGet Method async 
-                ///TODO: I HAVE TO CHANGE THIS -- Test if conection always gonna be close!
+                
+                ///RESOLVED: I HAVE TO CHANGE THIS -- Test if conection always gonna be close!
                 //if (_connection.State == ConnectionState.Open)
                 //    await _connection.CloseAsync();
 

@@ -17,8 +17,7 @@ namespace Web_API.Controllers
             _employeeService = employeeService;
         }
 
-        [HttpGet]
-        //public void <List<EmployeeEntity>> GetAllEmployee()
+        [HttpGet]       
         public async Task<List<EmployeeEntity>> GetAllEmployee()
         {
 
