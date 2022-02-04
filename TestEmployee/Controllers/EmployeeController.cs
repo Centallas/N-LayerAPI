@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Web_API.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class EmployeeController : Controller
     {
         private readonly IEmployeeService _employeeService;
@@ -25,5 +25,31 @@ namespace Web_API.Controllers
             return employee;
 
         }
+        // GET api/<EmployeeController>/5
+        [HttpGet("{id}")]
+        public async Task<List<EmployeeEntity>> Get(int id)
+        {
+            return await _employeeService.GetEmployeeById(id);
+        }
+        // POST api/<EmployeeController>
+        [HttpPost]
+        public async Task<string> Post([FromBody] EmployeeEntity emp)
+        {
+            return await _employeeService.InsertEmployee(emp);
+        }
+        // PUT api/<EmployeeController>/5
+        [HttpPut("{id}")]
+        public async Task<string> Put(int id, [FromBody] EmployeeEntity emp)
+        {
+            return await _employeeService.UpdateEmployee(id, emp);
+        }
+        // DELETE api/<EmployeeController>/5
+        [HttpDelete("{id}")]
+        public async Task<string> Delete(int id)
+        {
+            return await _employeeService.DeleteEmployee(id);
+        }
+
+
     }
 }

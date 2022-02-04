@@ -31,9 +31,7 @@ namespace Data_Access_Layer.Repository
         public async Task<string> EmployeeOpt(EmployeeEntity employee)
         {
             string msg = string.Empty;
-            //var result = new OkResult();
-           // await Task.Run(() =>
-            //{
+         
             
 
                 try
@@ -75,13 +73,11 @@ namespace Data_Access_Layer.Repository
                         _connection.Close();
                     }
                 }
-                // });
-                //result.ExecuteResultAsync();
+           
                 return msg;
         }
-        //Get the Record
-        //public async Task<DataSet> EmployeeGet(EmployeeEntity employee, out string msg)
-        public async Task<DataSet> EmployeeGet(EmployeeEntity employee)
+        //Get the Record       
+        public async Task<Tuple<DataSet,string>> EmployeeGet(EmployeeEntity employee)
         {
             string msg = string.Empty;
             DataSet dataSet = new DataSet();
@@ -105,34 +101,21 @@ namespace Data_Access_Layer.Repository
                 command.Parameters.AddWithValue("@Telephone", employee.Telephone);
                 command.Parameters.AddWithValue("@UpdatedOn", employee.UpdatedOn);
                 command.Parameters.AddWithValue("@Username", employee.Username);
-                command.Parameters.AddWithValue("@type", employee.type);
-
+                command.Parameters.AddWithValue("@type", employee.type);               
                
-                //IAsyncResult result = command.BeginExecuteNonQuery();
-                //await _connection.OpenAsync();
-                //var result = command.ExecuteReaderAsync();
-                //await _connection.CloseAsync();
-
                 SqlDataAdapter dataAdapter = new SqlDataAdapter(command);
                 await Task.Run(() => dataAdapter.Fill(dataSet));
-               
-                ///TODO: IMPLEMENT MSG
-                //msg = "SUCCESS";
 
-                //I set this 'cause I didn't know how to become EmployeeGet Method async 
-                
-                ///RESOLVED: I HAVE TO CHANGE THIS -- Test if conection always gonna be close!
-                //if (_connection.State == ConnectionState.Open)
-                //    await _connection.CloseAsync();
-
+                ///DONE:UNCOMMENT THIS!!
+                msg = "SUCCESS";              
 
             }
             catch (Exception ex)
             {
                 msg = ex.Message;
             }
-
-            return dataSet;
+           
+            return new Tuple<DataSet,string>(dataSet,msg);
         }
     }
 
