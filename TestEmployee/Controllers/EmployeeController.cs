@@ -17,19 +17,31 @@ namespace Web_API.Controllers
             _employeeService = employeeService;
         }
 
-        [HttpGet]       
-        public async Task<List<EmployeeEntity>> GetAllEmployee()
+        //https://stackoverflow.com/questions/54432916/asp-net-core-api-actionresultt-vs-async-taskt/54432964
+        [HttpGet]
+        public async Task<IActionResult> GetAllEmployee()
         {
 
-            var employee = await _employeeService.GetAllEmployee();
-            return employee;
+            List<EmployeeEntity> employee = await _employeeService.GetAllEmployee();
+
+            if (Equals(employee, null))
+            {
+                return NotFound();
+            }
+            return Ok(employee);
 
         }
         // GET api/<EmployeeController>/5
         [HttpGet("{id}")]
-        public async Task<List<EmployeeEntity>> Get(int id)
+        public async Task<IActionResult> Get(int id)
         {
-            return await _employeeService.GetEmployeeById(id);
+            var employee = await _employeeService.GetEmployeeById(id);
+            if (Equals(employee, null) || Equals(employee.Count, 0))
+            {
+                return NotFound();
+            }
+            else
+                return Ok(employee);
         }
         // POST api/<EmployeeController>
         [HttpPost]

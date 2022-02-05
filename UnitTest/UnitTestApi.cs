@@ -30,7 +30,7 @@ namespace UnitTest
             //https://medium.com/c-sharp-progarmming/unit-testing-in-asp-net-core-web-api-b2e6f7bdb860
 
             var controller = new EmployeeController(_service);
-            List<EmployeeEntity> result2 = new List<EmployeeEntity>();
+           
             var result = controller.GetAllEmployee();
             //Assert.IsNotNull(result);
             //Assert.AreEqual(false, result.IsCompletedSuccessfully);
