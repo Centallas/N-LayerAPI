@@ -11,7 +11,11 @@ namespace Data_Access_Layer.Repository
 {
     public class Db
     {
-        readonly SqlConnection _connection;
+        ///TODO: It has been changed only for testing --  
+        ///A readonly field cannot be assigned to (except in a constructor or a variable initializer)
+        ///https://stackoverflow.com/questions/6848441/assign-value-of-readonly-variable-in-private-method-called-only-by-constructors
+        //readonly SqlConnection _connection;
+        private SqlConnection _connection;
 
         private IConfigurationRoot GetConfiguration()
         {
@@ -23,9 +27,17 @@ namespace Data_Access_Layer.Repository
 
         public Db()
         {
+            InitializedConn();
+        }
+
+        private void InitializedConn()
+        {
             var configuration = GetConfiguration();
             _connection = new SqlConnection(configuration.GetSection("Data")
                 .GetSection("ConnectionString").Value);
+
+
+
         }
 
         public async Task<string> EmployeeOpt(EmployeeEntity employee)
@@ -83,7 +95,7 @@ namespace Data_Access_Layer.Repository
             DataSet dataSet = new DataSet();
             try
             {
-
+                InitializedConn();
                 SqlCommand command = new SqlCommand("Sp_Employee", _connection);
                 command.CommandType = CommandType.StoredProcedure;
                 command.Parameters.AddWithValue("@ID", employee.ID);
@@ -104,17 +116,13 @@ namespace Data_Access_Layer.Repository
                 command.Parameters.AddWithValue("@type", employee.type);
 
                 SqlDataAdapter dataAdapter = new SqlDataAdapter(command);
-                if (_connection.State != ConnectionState.Open)
-                {
-                    _connection.Open();
-                    dataAdapter.Fill(dataSet);
-                    _connection.Close();
 
-                }
-                else
-                {
-                    dataAdapter.Fill(dataSet);
-                }
+               
+                _connection.Open();
+                dataAdapter.Fill(dataSet);
+                _connection.Close();
+
+
                 //await Task.Run(() => dataAdapter.Fill(dataSet));
 
                 ///DONE:UNCOMMENT THIS!!

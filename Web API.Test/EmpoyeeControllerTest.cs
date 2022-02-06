@@ -62,7 +62,7 @@ namespace Web_API.Test
             var item = okResult.Result as OkObjectResult;
 
             //Expecting to return a single employee
-            Assert.IsType<EmployeeEntity>(item.Value);
+            Assert.IsType<List<EmployeeEntity>>(item.Value);
 
             //Now, let us check the value itself.
             var employeeItem = item.Value as EmployeeEntity;

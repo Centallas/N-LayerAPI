@@ -87,29 +87,33 @@ namespace Data_Access_Layer.Repository
             var tuple = await GetEmployeeData(id);
             DataSet ds = tuple.Item1;
 
-            foreach (DataRow dr in ds.Tables[0].Rows)
+            if (ds.Tables.Count > 0)
             {
-                employeeById.Add(new EmployeeEntity
+
+                foreach (DataRow dr in ds.Tables[0].Rows)
                 {
-                    ID = Convert.ToInt32(dr["ID"]),
-                    CompanyId = dr["CompanyId"].ToString(),
-                    CreatedOn = (DateTime)dr["CreatedOn"],
-                    DeletedOn = (DateTime)dr["DeletedOn"],
-                    Email = dr["Email"].ToString(),
-                    Fax = dr["Fax"].ToString(),
-                    TestName = dr["TestName"].ToString(),
-                    LastLogin = (DateTime)dr["LastLogin"],
-                    Password = dr["Password1"].ToString(),
-                    PortalId = dr["PortalId"].ToString(),
-                    RoleId = dr["RoleId"].ToString(),
-                    StatusId = dr["StatusId"].ToString(),
-                    Telephone = dr["Telephone"].ToString(),
-                    UpdatedOn = (DateTime)dr["UpdatedOn"],
-                    Username = dr["UserName"].ToString()
+                    employeeById.Add(new EmployeeEntity
+                    {
+                        ID = Convert.ToInt32(dr["ID"]),
+                        CompanyId = dr["CompanyId"].ToString(),
+                        CreatedOn = (DateTime)dr["CreatedOn"],
+                        DeletedOn = (DateTime)dr["DeletedOn"],
+                        Email = dr["Email"].ToString(),
+                        Fax = dr["Fax"].ToString(),
+                        TestName = dr["TestName"].ToString(),
+                        LastLogin = (DateTime)dr["LastLogin"],
+                        Password = dr["Password1"].ToString(),
+                        PortalId = dr["PortalId"].ToString(),
+                        RoleId = dr["RoleId"].ToString(),
+                        StatusId = dr["StatusId"].ToString(),
+                        Telephone = dr["Telephone"].ToString(),
+                        UpdatedOn = (DateTime)dr["UpdatedOn"],
+                        Username = dr["UserName"].ToString()
 
 
-                });
+                    });
 
+                }
             }
 
             return employeeById;
