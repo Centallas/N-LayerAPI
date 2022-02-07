@@ -26,7 +26,7 @@ namespace Web_API.Test
         [Fact]
         public void GetAllTest()
         {
-           
+
             //Act
             var result = _controller.GetAllEmployee();
             //Assert
@@ -43,7 +43,7 @@ namespace Web_API.Test
          * correct and second InlineData is wrong.we used wrong value because of NotFound 
          * test,and correct value for Ok test */
         [Theory]
-        [InlineData(9,2)]
+        [InlineData(9, 2)]
         public void GetEmployeeByIdTest(int id1, int id2)
         {
             //Arrange
@@ -62,14 +62,48 @@ namespace Web_API.Test
             var item = okResult.Result as OkObjectResult;
 
             //Expecting to return a single employee
-            Assert.IsType<List<EmployeeEntity>>(item.Value);
+            Assert.IsType<EmployeeEntity>(item.Value);
 
             //Now, let us check the value itself.
             var employeeItem = item.Value as EmployeeEntity;
             Assert.Equal(validInt, employeeItem.ID);
             Assert.Equal("testUpdatedVers2", employeeItem.TestName);
 
+        }
+        [Fact]
+        public void AddEmployeeTest()
+        {
+            //OK RESULT TEST START
 
+            //Arrange
+            var completeEmployee = new EmployeeEntity()
+            {
+                ID = 0,
+                CompanyId = "1",
+                CreatedOn = DateTime.Now,
+                DeletedOn = DateTime.Now,
+                Email = "xTest@test.tmp",
+                Fax = "000.000.000",
+                TestName = "testInsert4Vers2",
+                LastLogin = DateTime.Now,
+                Password = "test4InsertVers2",
+                PortalId = "1",
+                RoleId = "2",
+                StatusId = "1",
+                Telephone = "000.000.000",
+                UpdatedOn = DateTime.Now,
+                Username = "XUnitTest",
+                type = "insert"
+
+            };
+            //Act
+            var createdResponse =_controller.Post(completeEmployee);
+
+            //Assert
+            Assert.IsType<CreatedAtActionResult>(createdResponse);
+
+            ////value of the result
+            //var item = createdResponse as CreatedAtActionResult;
 
         }
     }

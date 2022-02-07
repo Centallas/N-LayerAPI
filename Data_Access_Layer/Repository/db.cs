@@ -48,27 +48,27 @@ namespace Data_Access_Layer.Repository
 
             try
             {
-                SqlCommand command = new SqlCommand("Sp_Employee", _connection);
-                command.CommandType = CommandType.StoredProcedure;
-                command.Parameters.AddWithValue("@ID", employee.ID);
-                command.Parameters.AddWithValue("@CompanyId", employee.CompanyId);
-                command.Parameters.AddWithValue("@CreatedOn", employee.CreatedOn);
-                command.Parameters.AddWithValue("@DeletedOn", employee.DeletedOn);
-                command.Parameters.AddWithValue("@Email", employee.Email);
-                command.Parameters.AddWithValue("@Fax", employee.Fax);
-                command.Parameters.AddWithValue("@TestName", employee.TestName);
-                command.Parameters.AddWithValue("@Lastlogin", employee.LastLogin);
-                command.Parameters.AddWithValue("@Password1", employee.Password);
-                command.Parameters.AddWithValue("@PortalId", employee.PortalId);
-                command.Parameters.AddWithValue("@RoleId", employee.RoleId);
-                command.Parameters.AddWithValue("@StatusId", employee.StatusId);
-                command.Parameters.AddWithValue("@Telephone", employee.Telephone);
-                command.Parameters.AddWithValue("@UpdatedOn", employee.UpdatedOn);
-                command.Parameters.AddWithValue("@Username", employee.Username);
-                command.Parameters.AddWithValue("@type", employee.type);
-                await _connection.OpenAsync();
-                await command.ExecuteNonQueryAsync();
-                await _connection.CloseAsync();
+                //SqlCommand command = new SqlCommand("Sp_Employee", _connection);
+                //command.CommandType = CommandType.StoredProcedure;
+                //command.Parameters.AddWithValue("@ID", employee.ID);
+                //command.Parameters.AddWithValue("@CompanyId", employee.CompanyId);
+                //command.Parameters.AddWithValue("@CreatedOn", employee.CreatedOn);
+                //command.Parameters.AddWithValue("@DeletedOn", employee.DeletedOn);
+                //command.Parameters.AddWithValue("@Email", employee.Email);
+                //command.Parameters.AddWithValue("@Fax", employee.Fax);
+                //command.Parameters.AddWithValue("@TestName", employee.TestName);
+                //command.Parameters.AddWithValue("@Lastlogin", employee.LastLogin);
+                //command.Parameters.AddWithValue("@Password1", employee.Password);
+                //command.Parameters.AddWithValue("@PortalId", employee.PortalId);
+                //command.Parameters.AddWithValue("@RoleId", employee.RoleId);
+                //command.Parameters.AddWithValue("@StatusId", employee.StatusId);
+                //command.Parameters.AddWithValue("@Telephone", employee.Telephone);
+                //command.Parameters.AddWithValue("@UpdatedOn", employee.UpdatedOn);
+                //command.Parameters.AddWithValue("@Username", employee.Username);
+                //command.Parameters.AddWithValue("@type", employee.type);
+                //_connection.Open();
+                //command.ExecuteNonQuery();
+                //_connection.CloseAsync();
                 msg = "SUCCESS";
 
 
@@ -82,7 +82,7 @@ namespace Data_Access_Layer.Repository
             {
                 if (_connection.State == ConnectionState.Open)
                 {
-                    _connection.Close();
+                   await _connection.CloseAsync();
                 }
             }
 
@@ -119,8 +119,7 @@ namespace Data_Access_Layer.Repository
 
                
                 _connection.Open();
-                dataAdapter.Fill(dataSet);
-                _connection.Close();
+                dataAdapter.Fill(dataSet);              
 
 
                 //await Task.Run(() => dataAdapter.Fill(dataSet));

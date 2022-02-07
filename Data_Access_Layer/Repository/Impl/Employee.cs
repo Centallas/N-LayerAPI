@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Data_Access_Layer.Repository
@@ -76,16 +77,17 @@ namespace Data_Access_Layer.Repository
             //employeeById = new List<EmployeeEntity>();
             return result;
         }
-        public async Task<List<EmployeeEntity>> GetEmployeeById(int id)
+        public async Task<EmployeeEntity> GetEmployeeById(int id)
         {
             return await GetEmployee(id);
         }
-        private async Task<List<EmployeeEntity>> GetEmployee(int id)
+        private async Task<EmployeeEntity> GetEmployee(int id)
         {
             //GetEmployeeData(id, out var ds, out var employeeById);
             var employeeById = new List<EmployeeEntity>();
             var tuple = await GetEmployeeData(id);
             DataSet ds = tuple.Item1;
+            EmployeeEntity _employee = new EmployeeEntity();
 
             if (ds.Tables.Count > 0)
             {
@@ -114,9 +116,11 @@ namespace Data_Access_Layer.Repository
                     });
 
                 }
+
+                _employee = employeeById.ToList().ElementAt(0);
             }
 
-            return employeeById;
+            return _employee;
         }
         public async Task<string> InsertEmployee(EmployeeEntity emp)
         {

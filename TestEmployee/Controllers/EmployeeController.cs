@@ -36,7 +36,8 @@ namespace Web_API.Controllers
         public async Task<IActionResult> Get(int id)
         {
             var employee = await _employeeService.GetEmployeeById(id);
-            if (Equals(employee, null) || Equals(employee.Count, 0))
+
+            if (Equals(employee, null) || (Equals(employee.ID, 0)))
             {
                 return NotFound();
             }
@@ -45,9 +46,15 @@ namespace Web_API.Controllers
         }
         // POST api/<EmployeeController>
         [HttpPost]
-        public async Task<string> Post([FromBody] EmployeeEntity emp)
+        public async Task<ActionResult<string>> Post([FromBody] EmployeeEntity emp)
         {
-            return await _employeeService.InsertEmployee(emp);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+            var item = await _employeeService.InsertEmployee(emp);
+
+            return CreatedAtAction("Get", new { id = emp.ID }, item);
         }
         // PUT api/<EmployeeController>/5
         [HttpPut("{id}")]
