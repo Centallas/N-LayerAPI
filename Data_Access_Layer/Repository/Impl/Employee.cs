@@ -94,32 +94,27 @@ namespace Data_Access_Layer.Repository
 
             if (ds.Tables.Count > 0)
             {
-
-                foreach (DataRow dr in ds.Tables[0].Rows)
-                {
-                    employeeById.Add(new EmployeeEntity
-                    {
-                        ID = Convert.ToInt32(dr["ID"]),
-                        CompanyId = dr["CompanyId"].ToString(),
-                        CreatedOn = (DateTime)dr["CreatedOn"],
-                        DeletedOn = (DateTime)dr["DeletedOn"],
-                        Email = dr["Email"].ToString(),
-                        Fax = dr["Fax"].ToString(),
-                        TestName = dr["TestName"].ToString(),
-                        LastLogin = (DateTime)dr["LastLogin"],
-                        Password = dr["Password1"].ToString(),
-                        PortalId = dr["PortalId"].ToString(),
-                        RoleId = dr["RoleId"].ToString(),
-                        StatusId = dr["StatusId"].ToString(),
-                        Telephone = dr["Telephone"].ToString(),
-                        UpdatedOn = (DateTime)dr["UpdatedOn"],
-                        Username = dr["UserName"].ToString()
+                employeeById.AddRange(from DataRow dr in ds.Tables[0].Rows
+                                      select new EmployeeEntity
+                                      {
+                                          ID = Convert.ToInt32(dr["ID"]),
+                                          CompanyId = dr["CompanyId"].ToString(),
+                                          CreatedOn = (DateTime)dr["CreatedOn"],
+                                          DeletedOn = (DateTime)dr["DeletedOn"],
+                                          Email = dr["Email"].ToString(),
+                                          Fax = dr["Fax"].ToString(),
+                                          TestName = dr["TestName"].ToString(),
+                                          LastLogin = (DateTime)dr["LastLogin"],
+                                          Password = dr["Password1"].ToString(),
+                                          PortalId = dr["PortalId"].ToString(),
+                                          RoleId = dr["RoleId"].ToString(),
+                                          StatusId = dr["StatusId"].ToString(),
+                                          Telephone = dr["Telephone"].ToString(),
+                                          UpdatedOn = (DateTime)dr["UpdatedOn"],
+                                          Username = dr["UserName"].ToString()
 
 
-                    });
-
-                }
-
+                                      });
                 _employee = employeeById.ToList().ElementAt(0);
             }
 
