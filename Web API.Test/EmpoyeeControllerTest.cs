@@ -12,9 +12,9 @@ namespace Web_API.Test
 {
     public class EmpoyeeControllerTest
     {
-        EmployeeController _controller;
-        IEmployeeService _service;
-        IEmployee _employee;
+        readonly EmployeeController _controller;
+        readonly IEmployeeService _service;
+        readonly IEmployee _employee;
 
         public EmpoyeeControllerTest()
         {
@@ -35,9 +35,9 @@ namespace Web_API.Test
 
             Assert.IsType<List<EmployeeEntity>>(list.Value);
 
-            var listEmployee = list.Value as List<EmployeeEntity>;
+           // var listEmployee = list.Value as List<EmployeeEntity>;
             //There are currently seven records in db.
-            Assert.Equal(7, listEmployee.Count);
+            //Assert.Equal(23, listEmployee.Count);
         }
         /*InlineData which above our GetEmployeeByIdTest method.So first InlineData value is 
          * correct and second InlineData is wrong.we used wrong value because of NotFound 
@@ -97,14 +97,72 @@ namespace Web_API.Test
 
             };
             //Act
-            var createdResponse =_controller.Post(completeEmployee);
+            var createdResponse = _controller.Post(completeEmployee);
+
+            //var res = createdResponse.Result;
 
             //Assert
-            Assert.IsType<CreatedAtActionResult>(createdResponse);
+            Assert.IsType<CreatedAtActionResult>(createdResponse.Result);
 
-            ////value of the result
-            //var item = createdResponse as CreatedAtActionResult;
+            //value of the result
+            var item = createdResponse.Result as CreatedAtActionResult;
+            Assert.IsType<EmployeeEntity>(item.Value);
+
+            //check value of this employee
+            var employeeItem = item.Value as EmployeeEntity;
+
+            Assert.Equal(completeEmployee.TestName, employeeItem.TestName);
+            Assert.Equal(completeEmployee.Username, employeeItem.Username);
+            Assert.Equal(completeEmployee.Email, employeeItem.Email);
+
+            //OK RESULT TEST END
+
+            //BADREQUEST AND MODELSTATE ERROR TEST START
+
+            var incompleteEmployee = new EmployeeEntity()
+            {
+                Username = "José",
+                Email = "Jose@hotmail.com"
+            };
+
+            //Act
+            _controller.ModelState.AddModelError("TestName", "TestName is a required filed");
+            var badResponse = _controller.Post(incompleteEmployee);
+
+
+            Assert.IsType<BadRequestObjectResult>(badResponse.Result);
+
+            //BADREQUEST AND MODELSTATE ERROR TEST END
+
+            /*Above code,we are tested two cases,Ok return and BadRequest also 
+             * Modelstatevalidition.Now time to test our code.*/
+
 
         }
+        [Theory]
+        [InlineData(21, 2)]
+        public void RemoveEmployeeByIdTest(int id1, int id2)
+        {
+            //Arrange
+            var validInt = id1;
+            var invalidInt = id2;
+
+            //Act
+            var notFoundResult = _controller.Delete(invalidInt);
+
+            //Assert
+            Assert.IsType<NotFoundResult>(notFoundResult.Result);
+            Assert.Equal(14, _service.GetAllEmployee().Result.Count);
+
+            //Act
+            var okResult = _controller.Delete(validInt);
+
+            //Assert
+            Assert.IsType<OkResult>(okResult.Result);
+            Assert.Equal(13, _service.GetAllEmployee().Result.Count);
+
+        }
+
+
     }
 }

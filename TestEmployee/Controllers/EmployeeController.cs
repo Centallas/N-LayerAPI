@@ -23,11 +23,13 @@ namespace Web_API.Controllers
         {
 
             List<EmployeeEntity> employee = await _employeeService.GetAllEmployee();
+            
 
             if (Equals(employee, null))
             {
                 return NotFound();
             }
+            var res = employee.Count;
             return Ok(employee);
 
         }
@@ -46,29 +48,36 @@ namespace Web_API.Controllers
         }
         // POST api/<EmployeeController>
         [HttpPost]
-        public async Task<ActionResult<string>> Post([FromBody] EmployeeEntity emp)
+        public async Task<IActionResult> Post([FromBody] EmployeeEntity emp)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest();
+                return BadRequest(ModelState);
             }
             var item = await _employeeService.InsertEmployee(emp);
 
-            return CreatedAtAction("Get", new { id = emp.ID }, item);
+            return CreatedAtAction(nameof(Get), new { id = item.ID }, item);
         }
         // PUT api/<EmployeeController>/5
         [HttpPut("{id}")]
-        public async Task<string> Put(int id, [FromBody] EmployeeEntity emp)
+        public async Task<EmployeeEntity> Put(int id, [FromBody] EmployeeEntity emp)
         {
             return await _employeeService.UpdateEmployee(id, emp);
         }
         // DELETE api/<EmployeeController>/5
         [HttpDelete("{id}")]
-        public async Task<string> Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            return await _employeeService.DeleteEmployee(id);
-        }
+            var existingItem = _employeeService.GetEmployeeById(id);
 
+            if (existingItem.Result.ID == 0)
+            {
+                return NotFound();
+
+            }
+            await _employeeService.DeleteEmployee(id);
+            return Ok();
+        }
 
     }
 }

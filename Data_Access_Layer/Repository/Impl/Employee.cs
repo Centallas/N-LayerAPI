@@ -15,7 +15,8 @@ namespace Data_Access_Layer.Repository
         List<EmployeeEntity> listEmployee = new List<EmployeeEntity>();
         public async Task<List<EmployeeEntity>> GetAllEmployee()
         {
-            return await GetEmployeeList();
+            var res = await GetEmployeeList();
+            return res;
         }
         private async Task<List<EmployeeEntity>> GetEmployeeList()
         {
@@ -23,8 +24,10 @@ namespace Data_Access_Layer.Repository
             var tuple = await GetListData();
             DataSet ds = tuple.Item1;
 
-            //await Task.Run(() =>
-            //{
+            if (listEmployee.Any())
+            {
+                listEmployee.Clear();
+            }
 
 
             foreach (DataRow dr in ds.Tables[0].Rows)
@@ -122,39 +125,42 @@ namespace Data_Access_Layer.Repository
 
             return _employee;
         }
-        public async Task<string> InsertEmployee(EmployeeEntity emp)
+        public async Task<EmployeeEntity> InsertEmployee(EmployeeEntity emp)
         {
             string msg;
+            EmployeeEntity employee = new EmployeeEntity();
             try
             {
-                msg = await _db.EmployeeOpt(emp);
+                employee = await _db.EmployeeOpt(emp);
             }
             catch (Exception ex)
             {
                 msg = ex.Message;
             }
-            return msg;
+            return employee;
 
         }
-        public async Task<string> UpdateEmployee(int id, EmployeeEntity emp)
+        public async Task<EmployeeEntity> UpdateEmployee(int id, EmployeeEntity emp)
         {
             string msg;
+            EmployeeEntity employee = new EmployeeEntity();
             try
             {
                 emp.ID = id;
-                msg = await _db.EmployeeOpt(emp);
+                employee = await _db.EmployeeOpt(emp);
             }
             catch (Exception ex)
             {
 
                 msg = ex.Message;
             }
-            return msg;
+            return employee;
 
         }
-        public async Task<string> DeleteEmployee(int id)
+        public async Task DeleteEmployee(int id)
         {
-            string msg;
+            //string msg;
+            EmployeeEntity employee = new EmployeeEntity();
             try
             {
                 EmployeeEntity emp = new EmployeeEntity
@@ -162,17 +168,16 @@ namespace Data_Access_Layer.Repository
                     ID = id,
                     type = "delete"
                 };
-                msg = await _db.EmployeeOpt(emp);
+
+                await _db.EmployeeOpt(emp);
             }
             catch (Exception ex)
             {
-                msg = ex.Message;
+                throw new Exception(ex.Message);
+
             }
-            return msg;
 
         }
-
-
 
     }
 }

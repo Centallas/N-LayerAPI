@@ -24,17 +24,17 @@ namespace Business_Logic_Layer.Service
         {
             return await _employee.GetEmployeeById(id);
         }
-        public async Task<string> InsertEmployee(EmployeeEntity emp)
+        public async Task<EmployeeEntity> InsertEmployee(EmployeeEntity emp)
         {
             return await _employee.InsertEmployee(emp);
         }
-        public async Task<string> UpdateEmployee(int id, EmployeeEntity emp)
+        public async Task<EmployeeEntity> UpdateEmployee(int id, EmployeeEntity emp)
         {
             return await _employee.UpdateEmployee(id, emp);
         }
-        public async Task<string> DeleteEmployee(int id)
+        public async Task DeleteEmployee(int id)
         {
-            return await _employee.DeleteEmployee(id);
+           await _employee.DeleteEmployee(id);
         }
     }
 }

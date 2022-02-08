@@ -8,9 +8,9 @@ namespace Data_Access_Layer
     {        
         Task<List<EmployeeEntity>> GetAllEmployee();
         Task<EmployeeEntity> GetEmployeeById(int id);
-        Task<string> InsertEmployee(EmployeeEntity emp);
-        Task<string> UpdateEmployee(int id, EmployeeEntity emp);
-        Task<string> DeleteEmployee(int id);
+        Task<EmployeeEntity> InsertEmployee(EmployeeEntity emp);
+        Task<EmployeeEntity> UpdateEmployee(int id, EmployeeEntity emp);
+        Task DeleteEmployee(int id);
 
 
     }
