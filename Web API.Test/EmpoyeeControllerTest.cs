@@ -142,7 +142,7 @@ namespace Web_API.Test
 
 
         [Theory]
-        [InlineData(17)]
+        [InlineData(16)]
         public void EditEmployeeTest(int id)
         {
 
@@ -211,7 +211,7 @@ namespace Web_API.Test
         }
 
         [Theory]
-        [InlineData(19, 2)]
+        [InlineData(38, 2)]
         public void RemoveEmployeeByIdTest(int id1, int id2)
         {
             //Arrange

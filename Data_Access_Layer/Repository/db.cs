@@ -9,15 +9,15 @@ using System.Threading.Tasks;
 
 namespace Data_Access_Layer.Repository
 {
-    public class Db
+    public static class Db
     {
         ///TODO: It has been changed only for testing --  
         ///A readonly field cannot be assigned to (except in a constructor or a variable initializer)
         ///https://stackoverflow.com/questions/6848441/assign-value-of-readonly-variable-in-private-method-called-only-by-constructors
-        //readonly SqlConnection _connection;
-        private SqlConnection _connection;
+        private static SqlConnection _connection;
+        //private SqlConnection _connection;
 
-        private IConfigurationRoot GetConfiguration()
+        private static IConfigurationRoot GetConfiguration()
         {
             var builder = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
@@ -25,12 +25,12 @@ namespace Data_Access_Layer.Repository
 
         }
 
-        public Db()
-        {
-            InitializedConn();
-        }
+        //public Db()
+        //{
+        //    InitializedConn();
+        //}
 
-        private void InitializedConn()
+        private static void InitializedConn()
         {
             var configuration = GetConfiguration();
             _connection = new SqlConnection(configuration.GetSection("Data")
@@ -40,7 +40,7 @@ namespace Data_Access_Layer.Repository
 
         }
 
-        public async Task<EmployeeEntity> EmployeeOpt(EmployeeEntity employee)
+        public static async Task<EmployeeEntity> EmployeeOpt(EmployeeEntity employee)
         {
             string msg = string.Empty;
 
@@ -84,7 +84,7 @@ namespace Data_Access_Layer.Repository
             return employee;
         }
         //Get the Record       
-        public async Task<Tuple<DataSet, string>> EmployeeGet(EmployeeEntity employee)
+        public static async Task<Tuple<DataSet, string>> EmployeeGet(EmployeeEntity employee)
         {
             string msg = string.Empty;
             DataSet dataSet = new DataSet();

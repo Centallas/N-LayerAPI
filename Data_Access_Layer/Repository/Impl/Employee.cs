@@ -10,7 +10,7 @@ namespace Data_Access_Layer.Repository
     public class Employee : IEmployee
     {
 
-        private readonly Db _db = new Db();
+        //private readonly Db _db = new Db();
         private string _msg = string.Empty;
         List<EmployeeEntity> listEmployee = new List<EmployeeEntity>();
         public async Task<List<EmployeeEntity>> GetAllEmployee()
@@ -65,7 +65,8 @@ namespace Data_Access_Layer.Repository
                 type = "get"
             };
 
-            var result = await _db.EmployeeGet(emp);
+            //var result = await _db.EmployeeGet(emp);
+            var result = await Db.EmployeeGet(emp);
 
             return result;
         }
@@ -76,7 +77,7 @@ namespace Data_Access_Layer.Repository
                 ID = id,
                 type = "getid"
             };
-            var result = await _db.EmployeeGet(emp);
+            var result = await Db.EmployeeGet(emp);
             //employeeById = new List<EmployeeEntity>();
             return result;
         }
@@ -126,7 +127,7 @@ namespace Data_Access_Layer.Repository
             EmployeeEntity employee = new EmployeeEntity();
             try
             {
-                employee = await _db.EmployeeOpt(emp);
+                employee = await Db.EmployeeOpt(emp);
             }
             catch (Exception ex)
             {
@@ -142,7 +143,7 @@ namespace Data_Access_Layer.Repository
             try
             {
                 emp.ID = id;
-                employee = await _db.EmployeeOpt(emp);
+                employee = await Db.EmployeeOpt(emp);
             }
             catch (Exception ex)
             {
@@ -164,7 +165,7 @@ namespace Data_Access_Layer.Repository
                     type = "delete"
                 };
 
-                await _db.EmployeeOpt(emp);
+                await Db.EmployeeOpt(emp);
             }
             catch (Exception ex)
             {
