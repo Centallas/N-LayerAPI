@@ -60,9 +60,15 @@ namespace Web_API.Controllers
         }
         // PUT api/<EmployeeController>/5
         [HttpPut("{id}")]
-        public async Task<EmployeeEntity> Put(int id, [FromBody] EmployeeEntity emp)
+        public async Task<IActionResult> Put(int id, [FromBody] EmployeeEntity emp)
         {
-            return await _employeeService.UpdateEmployee(id, emp);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var item = await _employeeService.UpdateEmployee(id, emp);
+
+            return CreatedAtAction(nameof(Put), new { id = item.ID }, item);
         }
         // DELETE api/<EmployeeController>/5
         [HttpDelete("{id}")]
