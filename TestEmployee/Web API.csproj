@@ -5,8 +5,14 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <Compile Remove="Configuration\AutoMapperModule.cs" />
+      <Compile Remove="Configuration\ConfigurationProviderProxy.cs" />
+    </ItemGroup>
+
+    <ItemGroup>
         <PackageReference Include="Autofac" Version="6.3.0" />
         <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="7.2.0" />
+        <PackageReference Include="AutoMapper.Contrib.Autofac.DependencyInjection" Version="6.0.1" />
         <!--<PackageReference Include="AutoMapper" Version="11.0.0" />
         <PackageReference Include="EntityFramework" Version="6.4.4" />
         <PackageReference Include="System.Data.SqlClient" Version="4.8.3" /> -->
@@ -15,10 +21,6 @@
     <ItemGroup>
         <ProjectReference Include="..\Business_Logic_Layer\Business_Logic_Layer.csproj" />
         <ProjectReference Include="..\Entity\Entity.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Model" />
     </ItemGroup>
 
 </Project>

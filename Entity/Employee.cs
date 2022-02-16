@@ -4,18 +4,10 @@ namespace Entity
 {
     public class EmployeeEntity
     {
-        //protected string _CustomerName = "";
-        //protected string _CustomerCode = "";
-        //public string CustomerCode
-        //{
-        //    get { return _CustomerCode; }
-        //    set { _CustomerCode = value; }
-        //}
-        //public string CustomerName
-        //{
-        //    get { return _CustomerName; }
-        //    set { _CustomerName = value; }
-        //}
+        public EmployeeEntity(int id)
+        {
+            ID = id;
+        }
         public int ID { get; set; } = 0;
         public string CompanyId { get; set; } = "";
         public DateTime CreatedOn { get; set; } = DateTime.Now;

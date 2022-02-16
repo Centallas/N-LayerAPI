@@ -1,8 +1,12 @@
+using Autofac;
+using AutoMapper;
+using AutoMapper.Contrib.Autofac.DependencyInjection;
 using Business_Logic_Layer.Service;
 using Entity;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Web_API.DTOs;
 
 namespace Web_API.Controllers
 {
@@ -12,25 +16,36 @@ namespace Web_API.Controllers
     {
         private readonly IEmployeeService _employeeService;
 
+
         public EmployeeController(IEmployeeService employeeService)
         {
             _employeeService = employeeService;
+
         }
 
         //https://stackoverflow.com/questions/54432916/asp-net-core-api-actionresultt-vs-async-taskt/54432964
         [HttpGet]
         public async Task<IActionResult> GetAllEmployee()
         {
-
-            List<EmployeeEntity> employee = await _employeeService.GetAllEmployee();
-            
-
-            if (Equals(employee, null))
+            try
             {
-                return NotFound();
+                var employee = await _employeeService.GetAllEmployee();
+
+
+                if (Equals(employee, null))
+                {
+                    return NotFound();
+                }
+                
+                return Ok(employee);
+
             }
-            var res = employee.Count;
-            return Ok(employee);
+            catch (System.Exception exc)
+            {
+
+                throw new System.Exception(exc.Message);
+            }
+
 
         }
         // GET api/<EmployeeController>/5
@@ -39,7 +54,9 @@ namespace Web_API.Controllers
         {
             var employee = await _employeeService.GetEmployeeById(id);
 
-            if (Equals(employee, null) || (Equals(employee.ID, 0)))
+            ///TODO: from now validate with company, then get ride of initialization values 
+            ///of EmployeeEntity
+            if (Equals(employee.CompanyId, string.Empty))
             {
                 return NotFound();
             }
@@ -75,8 +92,9 @@ namespace Web_API.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             var existingItem = _employeeService.GetEmployeeById(id);
-
-            if (existingItem.Result.ID == 0)
+            ///TODO: from now validate with company, then get ride of initialization values 
+            ///of EmployeeEntity
+            if (existingItem.Result.CompanyId == string.Empty)
             {
                 return NotFound();
 

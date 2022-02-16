@@ -1,5 +1,9 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Autofac;
+using AutoMapper;
+using AutoMapper.Contrib.Autofac.DependencyInjection;
+using Business_Logic_Layer.DTOs;
 using Data_Access_Layer;
 using Data_Access_Layer.Repository;
 using Entity;
@@ -9,32 +13,45 @@ namespace Business_Logic_Layer.Service
     public class EmployeeService : IEmployeeService
     {
         private readonly IEmployee _employee;
+        private readonly IMapper _mapper;
 
-        public EmployeeService(IEmployee employee)
+        public EmployeeService(IEmployee employee, IMapper mapper)
         {
             _employee = employee;
+            _mapper = mapper;
         }
-
-        public async Task<List<EmployeeEntity>>GetAllEmployee()
+        public async Task<List<EmployeeDto>> GetAllEmployee()
         {
             var resService = await _employee.GetAllEmployee();
-            return resService;
-        }
-        public async Task<EmployeeEntity> GetEmployeeById(int id)
+            return MapListEmployeeEntity(resService);
+
+        }    
+        public async Task<EmployeeDto> GetEmployeeById(int id)
         {
-            return await _employee.GetEmployeeById(id);
+            var employee = await _employee.GetEmployeeById(id);
+            return MapEmployeeEntity(employee);
         }
-        public async Task<EmployeeEntity> InsertEmployee(EmployeeEntity emp)
+        public async Task<EmployeeDto> InsertEmployee(EmployeeEntity employee)
         {
-            return await _employee.InsertEmployee(emp);
-        }
-        public async Task<EmployeeEntity> UpdateEmployee(int id, EmployeeEntity emp)
+            await _employee.InsertEmployee(employee);
+            return MapEmployeeEntity(employee);
+        }      
+        public async Task<EmployeeDto> UpdateEmployee(int id, EmployeeEntity emp)
         {
-            return await _employee.UpdateEmployee(id, emp);
+             await _employee.UpdateEmployee(id, emp);
+            return MapEmployeeEntity(emp);
         }
         public async Task DeleteEmployee(int id)
         {
-           await _employee.DeleteEmployee(id);
+            await _employee.DeleteEmployee(id);
+        }        ///TODO: SET this Method in another class
+        private EmployeeDto MapEmployeeEntity(EmployeeEntity employee)
+        {
+            return _mapper.Map<EmployeeDto>(employee);
+        }
+        private List<EmployeeDto> MapListEmployeeEntity(List<EmployeeEntity> resService)
+        {
+            return _mapper.Map<List<EmployeeDto>>(resService);
         }
     }
 }

@@ -1,4 +1,7 @@
 using Autofac;
+using AutoMapper.Contrib.Autofac.DependencyInjection;
+using Business_Logic_Layer.Core;
+using Entity;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -14,23 +17,18 @@ namespace TestEmployee
         {
             Configuration = configuration;
         }
-
-
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+
         }
         public void ConfigureContainer(ContainerBuilder builder)
         {
-            // builder.RegisterType<EmployeeService>().As<IEmployeeService>().InstancePerDependency();
-
             builder.RegisterModule(new RegisterModule());
         }
-
-
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {

@@ -1,3 +1,7 @@
+using Autofac;
+using AutoMapper;
+using AutoMapper.Contrib.Autofac.DependencyInjection;
+using Business_Logic_Layer.DTOs;
 using Business_Logic_Layer.Service;
 using Data_Access_Layer;
 using Data_Access_Layer.Repository;
@@ -15,29 +19,31 @@ namespace Web_API.Test
         readonly EmployeeController _controller;
         readonly IEmployeeService _service;
         readonly IEmployee _employee;
-
+        private readonly IMapper _mapper;
         public EmpoyeeControllerTest()
         {
+            //Buld container mapper config using AutoMapper.Contrib.Autofac.DependencyInjection;             
+            _mapper = SetIMapperType();
             _employee = new Employee();
-            _service = new EmployeeService(_employee);
+            _service = new EmployeeService(_employee, _mapper);
             _controller = new EmployeeController(_service);
         }
+
 
         [Fact]
         public void GetAllTest()
         {
-
             //Act
             var result = _controller.GetAllEmployee();
             //Assert
             Assert.IsType<OkObjectResult>(result.Result);
             var list = result.Result as OkObjectResult;
 
-            Assert.IsType<List<EmployeeEntity>>(list.Value);
+            Assert.IsType<List<EmployeeDto>>(list.Value);
 
-            // var listEmployee = list.Value as List<EmployeeEntity>;
-            //There are currently seven records in db.
-            //Assert.Equal(23, listEmployee.Count);
+            var listEmployee = list.Value as List<EmployeeDto>;
+            //There are currently 13 records in db. 02-15-2022
+            Assert.Equal(16, listEmployee.Count);
         }
         /*InlineData which above our GetEmployeeByIdTest method.So first InlineData value is 
          * correct and second InlineData is wrong.we used wrong value because of NotFound 
@@ -62,12 +68,12 @@ namespace Web_API.Test
             var item = okResult.Result as OkObjectResult;
 
             //Expecting to return a single employee
-            Assert.IsType<EmployeeEntity>(item.Value);
+            Assert.IsType<EmployeeDto>(item.Value);
 
             //Now, let us check the value itself.
-            var employeeItem = item.Value as EmployeeEntity;
+            var employeeItem = item.Value as EmployeeDto;
             Assert.Equal(validInt, employeeItem.ID);
-            Assert.Equal("testUpdated3", employeeItem.TestName);
+            Assert.Equal("xTestDTO02Edit", employeeItem.TestName);
 
         }
         [Fact]
@@ -76,7 +82,7 @@ namespace Web_API.Test
             //OK RESULT TEST START
 
             //Arrange
-            var completeEmployee = new EmployeeEntity()
+            var completeEmployee = new EmployeeEntity(0)
             {
                 ID = 0,
                 CompanyId = "1",
@@ -106,10 +112,10 @@ namespace Web_API.Test
 
             //value of the result
             var item = createdResponse.Result as CreatedAtActionResult;
-            Assert.IsType<EmployeeEntity>(item.Value);
+            Assert.IsType<EmployeeDto>(item.Value);
 
             //check value of this employee
-            var employeeItem = item.Value as EmployeeEntity;
+            var employeeItem = item.Value as EmployeeDto;
 
             Assert.Equal(completeEmployee.TestName, employeeItem.TestName);
             Assert.Equal(completeEmployee.Username, employeeItem.Username);
@@ -119,7 +125,7 @@ namespace Web_API.Test
 
             //BADREQUEST AND MODELSTATE ERROR TEST START
 
-            var incompleteEmployee = new EmployeeEntity()
+            var incompleteEmployee = new EmployeeEntity(0)
             {
                 Username = "José",
                 Email = "Jose@hotmail.com"
@@ -142,22 +148,22 @@ namespace Web_API.Test
 
 
         [Theory]
-        [InlineData(16)]
+        [InlineData(1)]
         public void EditEmployeeTest(int id)
         {
 
             //OK RESULT TEST START
 
             //Arrange
-            var completeEmployee = new EmployeeEntity()
+            var completeEmployee = new EmployeeEntity(id)
             {
                 ID = 0,
                 CompanyId = "1",
                 CreatedOn = DateTime.Now,
                 DeletedOn = DateTime.Now,
-                Email = "xTestEdit@test.tmp",
+                Email = "xTestEditDTO02@test.tmp",
                 Fax = "000.000.000",
-                TestName = "xTestEdit",
+                TestName = "xTestDTO02Edit",
                 LastLogin = DateTime.Now,
                 Password = "xTestEdit",
                 PortalId = "1",
@@ -165,7 +171,7 @@ namespace Web_API.Test
                 StatusId = "1",
                 Telephone = "000.000.000",
                 UpdatedOn = DateTime.Now,
-                Username = "XUnitEditTest",
+                Username = "XUnitDTO02EditTest",
                 type = "update"
 
             };
@@ -179,11 +185,11 @@ namespace Web_API.Test
 
             //value of the result
             var item = createdResponse.Result as CreatedAtActionResult;
-            Assert.IsType<EmployeeEntity>(item.Value);
+            Assert.IsType<EmployeeDto>(item.Value);
 
 
             //check value of this employee
-            var employeeItem = item.Value as EmployeeEntity;
+            var employeeItem = item.Value as EmployeeDto;
 
             Assert.Equal(completeEmployee.TestName, employeeItem.TestName);
             Assert.Equal(completeEmployee.Username, employeeItem.Username);
@@ -193,7 +199,7 @@ namespace Web_API.Test
 
             //BADREQUEST AND MODELSTATE ERROR TEST START
 
-            var incompleteEmployee = new EmployeeEntity()
+            var incompleteEmployee = new EmployeeEntity(0)
             {
                 Username = "José",
                 Email = "Jose@hotmail.com"
@@ -210,30 +216,56 @@ namespace Web_API.Test
 
         }
 
-        [Theory]
-        [InlineData(38, 2)]
-        public void RemoveEmployeeByIdTest(int id1, int id2)
+        //[Theory]
+        //[InlineData(45, 2)]
+        //public void RemoveEmployeeByIdTest(int id1, int id2)
+        //{
+        //    //Arrange
+        //    var validInt = id1;
+        //    var invalidInt = id2;
+
+        //    //Act
+        //    var notFoundResult = _controller.Delete(invalidInt);
+
+        //    //Assert
+        //    Assert.IsType<NotFoundResult>(notFoundResult.Result);
+        //    Assert.Equal(15, _service.GetAllEmployee().Result.Count);
+
+        //    //Act
+        //    var okResult = _controller.Delete(validInt);
+
+        //    //Assert
+        //    Assert.IsType<OkResult>(okResult.Result);
+        //    Assert.Equal(14, _service.GetAllEmployee().Result.Count);
+
+        //}
+
+
+        //-----https://github.com/alsami/AutoMapper.Contrib.Autofac.DependencyInjection
+
+        [Fact]
+        public void ValidateMappingConfig()
         {
-            //Arrange
-            var validInt = id1;
-            var invalidInt = id2;
+            var containerBuilder = new ContainerBuilder();
+            containerBuilder.RegisterAutoMapper(typeof(EmployeeService).Assembly);
 
-            //Act
-            var notFoundResult = _controller.Delete(invalidInt);
+            var container = containerBuilder.Build();
+            var mapperConfiguration = container.Resolve<MapperConfiguration>();
 
-            //Assert
-            Assert.IsType<NotFoundResult>(notFoundResult.Result);
-            Assert.Equal(14, _service.GetAllEmployee().Result.Count);
-
-            //Act
-            var okResult = _controller.Delete(validInt);
-
-            //Assert
-            Assert.IsType<OkResult>(okResult.Result);
-            Assert.Equal(13, _service.GetAllEmployee().Result.Count);
+            // this line will throw when mappings are not working as expected
+            // it's wise to write a test for that, which is always executed within a CI pipeline for your project.
+            mapperConfiguration.AssertConfigurationIsValid();
 
         }
 
+        private static IMapper SetIMapperType()
+        {
+            var containerBuilder = new ContainerBuilder();
+            containerBuilder.RegisterAutoMapper(typeof(EmployeeService).Assembly, propertiesAutowired: true);
+            var container = containerBuilder.Build();
 
+            return container.Resolve<IMapper>();
+
+        }
     }
 }

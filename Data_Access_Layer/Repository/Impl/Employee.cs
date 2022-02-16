@@ -32,7 +32,7 @@ namespace Data_Access_Layer.Repository
 
             foreach (DataRow dr in ds.Tables[0].Rows)
             {
-                listEmployee.Add(new EmployeeEntity
+                listEmployee.Add(new EmployeeEntity(Convert.ToInt32(dr["ID"]))
                 {
                     ID = Convert.ToInt32(dr["ID"]),
                     CompanyId = dr["CompanyId"].ToString(),
@@ -60,7 +60,7 @@ namespace Data_Access_Layer.Repository
 
 
         {
-            EmployeeEntity emp = new EmployeeEntity()
+            EmployeeEntity emp = new EmployeeEntity(0)
             {
                 type = "get"
             };
@@ -72,7 +72,7 @@ namespace Data_Access_Layer.Repository
         }
         private async Task<Tuple<DataSet, string>> GetEmployeeData(int id)
         {
-            EmployeeEntity emp = new EmployeeEntity
+            EmployeeEntity emp = new EmployeeEntity(id)
             {
                 ID = id,
                 type = "getid"
@@ -91,12 +91,12 @@ namespace Data_Access_Layer.Repository
             var employeeById = new List<EmployeeEntity>();
             var tuple = await GetEmployeeData(id);
             DataSet ds = tuple.Item1;
-            EmployeeEntity _employee = new EmployeeEntity();
+            EmployeeEntity _employee = new EmployeeEntity(id);
 
             if (ds.Tables.Count > 0)
             {
                 employeeById.AddRange(from DataRow dr in ds.Tables[0].Rows
-                                      select new EmployeeEntity
+                                      select new EmployeeEntity(Convert.ToInt32(dr["ID"]))
                                       {
                                           ID = Convert.ToInt32(dr["ID"]),
                                           CompanyId = dr["CompanyId"].ToString(),
@@ -124,7 +124,7 @@ namespace Data_Access_Layer.Repository
         public async Task<EmployeeEntity> InsertEmployee(EmployeeEntity emp)
         {
             string msg;
-            EmployeeEntity employee = new EmployeeEntity();
+            EmployeeEntity employee = new EmployeeEntity(emp.ID);
             try
             {
                 employee = await Db.EmployeeOpt(emp);
@@ -139,7 +139,7 @@ namespace Data_Access_Layer.Repository
         public async Task<EmployeeEntity> UpdateEmployee(int id, EmployeeEntity emp)
         {
             string msg;
-            EmployeeEntity employee = new EmployeeEntity();
+            EmployeeEntity employee = new EmployeeEntity(id);
             try
             {
                 emp.ID = id;
@@ -156,10 +156,10 @@ namespace Data_Access_Layer.Repository
         public async Task DeleteEmployee(int id)
         {
             //string msg;
-            EmployeeEntity employee = new EmployeeEntity();
+            EmployeeEntity employee = new EmployeeEntity(id);
             try
             {
-                EmployeeEntity emp = new EmployeeEntity
+                EmployeeEntity emp = new EmployeeEntity(id)
                 {
                     ID = id,
                     type = "delete"
